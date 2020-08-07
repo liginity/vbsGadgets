@@ -3,6 +3,11 @@
 
 Option Explicit
 
+' reference https://superuser.com/a/641661/1149997
+Sub WriteLine ( strLine )
+    WScript.Stdout.WriteLine strLine
+End Sub
+
 Dim Shell, FS
 Set Shell = CreateObject("WScript.Shell")
 Set FS = CreateObject("Scripting.FileSystemObject")
@@ -14,11 +19,17 @@ Dim SupportedExtension
 
 Function Conv(FileName, SupportedExtension)
   Dim PPT, Range, SaveName
-  Set PPT = PowerPoint.Presentations.Open(FileName)
-  Set Range = PPT.PrintOptions.Ranges.Add(1, 1)
   SaveName = Replace(FileName, "." & SupportedExtension, ".pdf")
-  PPT.ExportAsFixedFormat SaveName, 2, 2, 0, 2, 4, 0, Range, 1, False, False, False, False, False
-  PPT.Close
+  ' if the pdf version doesn't exist
+  If Not FS.FileExists(SaveName) Then
+    WriteLine "Converting (" & FileName & " ) to (" & SaveName & ") ..."
+    Set PPT = PowerPoint.Presentations.Open(FileName)
+    Set Range = PPT.PrintOptions.Ranges.Add(1, 1)
+    PPT.ExportAsFixedFormat SaveName, 2, 2, 0, 2, 4, 0, Range, 1, False, False, False, False, False
+    PPT.Close
+  Else
+    WriteLine "Output file (" & SaveName & ") already exists!"
+  End If
 End Function
 
 Sub ConvAll(Dir)
