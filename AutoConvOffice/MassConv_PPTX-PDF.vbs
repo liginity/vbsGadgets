@@ -25,7 +25,10 @@ Function Conv(FileName, SupportedExtension)
     WriteLine "Converting (" & FileName & " ) to (" & SaveName & ") ..."
     Set PPT = PowerPoint.Presentations.Open(FileName)
     Set Range = PPT.PrintOptions.Ranges.Add(1, 1)
-    PPT.ExportAsFixedFormat SaveName, 2, 2, 0, 2, 4, 0, Range, 1, False, False, False, False, False
+    PPT.ExportAsFixedFormat SaveName, 2, 2, 0, 2, 10, 0, Range, 1, False, False, False, False, False
+    ' see <https://docs.microsoft.com/en-us/previous-versions/office/developer/office-2003/aa211582(v=office.11)>
+    ' "ppPrintOutputOneSlideHandouts" is 10
+    ' PPT.SaveCopyAs SaveName  ' Not working
     PPT.Close
   Else
     WriteLine "Output file (" & SaveName & ") already exists!"
